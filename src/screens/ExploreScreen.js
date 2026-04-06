@@ -19,6 +19,9 @@ import {
   User 
 } from 'lucide-react-native';
 
+// 1. Import dữ liệu từ data.js
+import { PRODUCTS } from '../data/data';
+
 const { width } = Dimensions.get('window');
 const COLUMN_WIDTH = (width - 60) / 2;
 
@@ -30,27 +33,39 @@ const COLORS = {
   white: '#FFFFFF',
 };
 
-const CATEGORIES = [
-  { id: '1', name: 'Frash Fruits & Vegetable', image: 'https://cdn-icons-png.flaticon.com/512/2329/2329903.png', bgColor: '#EEF8F2', borderColor: '#53B175' },
-  { id: '2', name: 'Cooking Oil & Ghee', image: 'https://cdn-icons-png.flaticon.com/512/3063/3063822.png', bgColor: '#FFF6EE', borderColor: '#F8A44C' },
-  { id: '3', name: 'Meat & Fish', image: 'https://cdn-icons-png.flaticon.com/512/1041/1041300.png', bgColor: '#FDE8E4', borderColor: '#F7A593' },
-  { id: '4', name: 'Bakery & Snacks', image: 'https://cdn-icons-png.flaticon.com/512/3014/3014502.png', bgColor: '#F4EBF7', borderColor: '#D3B0E0' },
-  { id: '5', name: 'Dairy & Eggs', image: 'https://cdn-icons-png.flaticon.com/512/2674/2674067.png', bgColor: '#FFF9E5', borderColor: '#FDE598' },
-  { id: '6', name: 'Beverages', image: 'https://cdn-icons-png.flaticon.com/512/2405/2405479.png', bgColor: '#EDF7FC', borderColor: '#B7DFF5' },
-];
+// 2. Định nghĩa màu sắc và icon cho từng loại danh mục (để giao diện đẹp như mẫu)
+const CATEGORY_STYLES = {
+  'Fruits': { bgColor: '#EEF8F2', borderColor: '#53B175', image: require('../../assets/fruits.png') },
+  'Beverages': { bgColor: '#EDF7FC', borderColor: '#B7DFF5', image: require('../../assets/beverages.png') },
+  'Dairy': { bgColor: '#FFF9E5', borderColor: '#FDE598', image: require('../../assets/dairy.png') },
+  // Thêm các category khác nếu data.js của bạn có thêm
+};
 
 export default function ExploreScreen({ navigation }) {
   
+  // 3. Xử lý lấy danh sách danh mục không trùng lặp từ PRODUCTS
+  const uniqueCategories = Array.from(new Set(PRODUCTS.map(item => item.category))).map(catName => {
+    // Lấy style đã định nghĩa ở trên, nếu không có thì dùng màu mặc định
+    const style = CATEGORY_STYLES[catName] || { 
+      bgColor: '#F2F3F2', 
+      borderColor: '#E2E2E2', 
+      image: require('../../assets/fruits.png')
+    };
+    return {
+      name: catName,
+      ...style
+    };
+  });
+
   const renderCategoryItem = ({ item }) => (
     <TouchableOpacity 
       style={[styles.categoryCard, { backgroundColor: item.bgColor, borderColor: item.borderColor }]}
       onPress={() => {
-        if(item.name === 'Beverages') {
-          navigation.navigate('Beverages');
-        }
+        // Điều hướng sang trang sản phẩm của danh mục đó
+        navigation.navigate('Beverages', { category: item.name });
       }}
     >
-      <Image source={{ uri: item.image }} style={styles.categoryImage} />
+      <Image source={item.image} style={styles.categoryImage} />
       <Text style={styles.categoryName}>{item.name}</Text>
     </TouchableOpacity>
   );
@@ -62,52 +77,35 @@ export default function ExploreScreen({ navigation }) {
         <Text style={styles.headerTitle}>Find Products</Text>
       </View>
 
-      <View style={styles.searchContainer}>
+      {/* Thanh Search điều hướng sang SearchScreen */}
+      <TouchableOpacity
+        activeOpacity={0.8}  
+        style={styles.searchContainer} 
+        onPress={() => navigation.navigate('Search')}
+      >
         <Search color={COLORS.black} size={20} />
-        <TextInput 
-          style={styles.searchInput} 
-          placeholder="Search Store" 
-          placeholderTextColor={COLORS.gray}
-        />
-      </View>
+        <View style={styles.fakeInput}>
+           <Text style={styles.searchPlaceholder}>Search Store</Text>
+        </View>
+      </TouchableOpacity>
 
       <FlatList
-        data={CATEGORIES}
+        data={uniqueCategories}
         renderItem={renderCategoryItem}
-        keyExtractor={item => item.id}
+        keyExtractor={item => item.name}
         numColumns={2}
         showsVerticalScrollIndicator={false}
         contentContainerStyle={styles.listPadding}
         columnWrapperStyle={styles.columnWrapper}
       />
 
-      {/* FOOTER ĐIỀU HƯỚNG (Giống HomeScreen) */}
+      {/* FOOTER */}
       <View style={styles.footer}>
-        <TabItem 
-          icon={<Store color={COLORS.black} size={24} />} 
-          label="Shop" 
-          onPress={() => navigation.navigate('Home')} 
-        />
-        <TabItem 
-          icon={<ExploreIcon color={COLORS.green} size={24} />} 
-          label="Explore" 
-          active 
-        />
-        <TabItem 
-          icon={<ShoppingCart color={COLORS.black} size={24} />} 
-          label="Cart" 
-          onPress={() => navigation.navigate('Cart')} 
-        />
-        <TabItem 
-          icon={<Heart color={COLORS.black} size={24} />} 
-          label="Favourite" 
-          onPress={() => navigation.navigate('Favourite')} 
-        />
-        <TabItem 
-          icon={<User color={COLORS.black} size={24} />} 
-          label="Account" 
-          onPress={() => navigation.navigate('Account')} 
-        />
+        <TabItem icon={<Store color={COLORS.black} size={24} />} label="Shop" onPress={() => navigation.navigate('Home')} />
+        <TabItem icon={<ExploreIcon color={COLORS.green} size={24} />} label="Explore" active />
+        <TabItem icon={<ShoppingCart color={COLORS.black} size={24} />} label="Cart" onPress={() => navigation.navigate('Cart')} />
+        <TabItem icon={<Heart color={COLORS.black} size={24} />} label="Favourite" onPress={() => navigation.navigate('Favourite')} />
+        <TabItem icon={<User color={COLORS.black} size={24} />} label="Account" onPress={() => navigation.navigate('Account')} />
       </View>
     </SafeAreaView>
   );
@@ -136,9 +134,9 @@ const styles = StyleSheet.create({
     height: 50,
     marginBottom: 20,
   },
-  searchInput: { flex: 1, marginLeft: 10, fontSize: 16, color: COLORS.black },
-  
-  listPadding: { paddingHorizontal: 20, paddingBottom: 110 }, // Padding lớn để ko bị footer che
+  fakeInput: { flex: 1, marginLeft: 10 },
+  searchPlaceholder: { fontSize: 16, color: COLORS.gray },
+  listPadding: { paddingHorizontal: 20, paddingBottom: 110 },
   columnWrapper: { justifyContent: 'space-between', marginBottom: 15 },
   
   categoryCard: {

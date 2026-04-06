@@ -19,8 +19,10 @@ const COLORS = {
   background: '#F2F3F2'
 };
 
-export default function ProductDetailScreen({ navigation }) {
+export default function ProductDetailScreen({ navigation, route }) {
   const [quantity, setQuantity] = useState(1);
+
+  const { product } = route.params;
 
   return (
     <SafeAreaView style={styles.container}>
@@ -36,7 +38,7 @@ export default function ProductDetailScreen({ navigation }) {
             </TouchableOpacity>
           </View>
           <Image 
-            source={{ uri: 'https://cdn-icons-png.flaticon.com/512/2907/2907444.png' }} 
+            source={product.image} 
             style={styles.productImage} 
           />
         </View>
@@ -45,8 +47,8 @@ export default function ProductDetailScreen({ navigation }) {
         <View style={styles.contentContainer}>
           <View style={styles.rowBetween}>
             <View>
-              <Text style={styles.productName}>Naturel Fresh Apple</Text>
-              <Text style={styles.productUnit}>1kg, Price</Text>
+              <Text style={styles.productName}>{product.name}</Text>
+              <Text style={styles.productUnit}>{product.unit}</Text>
             </View>
             <TouchableOpacity>
               <Star color={COLORS.gray} size={24} />
@@ -70,7 +72,7 @@ export default function ProductDetailScreen({ navigation }) {
                 <Plus color={COLORS.green} size={25} />
               </TouchableOpacity>
             </View>
-            <Text style={styles.productPrice}>$4.99</Text>
+            <Text style={styles.productPrice}>${product.price.toFixed(2)}</Text>
           </View>
 
           <View style={styles.divider} />

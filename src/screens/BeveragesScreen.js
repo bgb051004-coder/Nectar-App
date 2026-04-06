@@ -10,6 +10,7 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { ChevronLeft, Plus, SlidersHorizontal } from 'lucide-react-native';
+import { PRODUCTS } from '../data/data';
 
 const { width } = Dimensions.get('window');
 const COLUMN_WIDTH = (width - 55) / 2; // Chia 2 cột cân đối
@@ -22,17 +23,8 @@ const COLORS = {
   white: '#FFFFFF',
 };
 
-// Dữ liệu mẫu cho đồ uống
-const BEVERAGES_DATA = [
-  { id: '1', name: 'Diet Coke', unit: '355ml, Price', price: '$1.99', image: 'https://cdn-icons-png.flaticon.com/512/3075/3075913.png' },
-  { id: '2', name: 'Sprite Can', unit: '325ml, Price', price: '$1.50', image: 'https://cdn-icons-png.flaticon.com/512/822/822216.png' },
-  { id: '3', name: 'Apple & Grape Juice', unit: '2L, Price', price: '$15.99', image: 'https://cdn-icons-png.flaticon.com/512/3076/3076041.png' },
-  { id: '4', name: 'Orange Juice', unit: '2L, Price', price: '$8.99', image: 'https://cdn-icons-png.flaticon.com/512/2442/2442006.png' },
-  { id: '5', name: 'Coca Cola Can', unit: '325ml, Price', price: '$4.99', image: 'https://cdn-icons-png.flaticon.com/512/3075/3075896.png' },
-  { id: '6', name: 'Pepsi Can', unit: '330ml, Price', price: '$4.99', image: 'https://cdn-icons-png.flaticon.com/512/822/822237.png' },
-];
-
 export default function BeveragesScreen({ navigation }) {
+  const beveragesData = PRODUCTS.filter(item => item.category === 'Beverages');
   
   const renderProductItem = ({ item }) => (
     <TouchableOpacity 
@@ -40,7 +32,7 @@ export default function BeveragesScreen({ navigation }) {
       activeOpacity={0.8}
       onPress={() => navigation.navigate('ProductDetail', { product: item })}
     >
-      <Image source={{ uri: item.image }} style={styles.productImage} />
+      <Image source={item.image} style={styles.productImage} />
       <View style={styles.infoContainer}>
         <Text style={styles.productName} numberOfLines={1}>{item.name}</Text>
         <Text style={styles.productUnit}>{item.unit}</Text>
@@ -62,14 +54,17 @@ export default function BeveragesScreen({ navigation }) {
           <ChevronLeft color={COLORS.black} size={30} />
         </TouchableOpacity>
         <Text style={styles.headerTitle}>Beverages</Text>
-        <TouchableOpacity style={styles.filterButton}>
+        <TouchableOpacity 
+        style={styles.filterButton}
+        onPress={() => navigation.navigate('Filter')}
+        >
           <SlidersHorizontal color={COLORS.black} size={22} />
         </TouchableOpacity>
       </View>
 
       {/* Grid Danh sách sản phẩm */}
       <FlatList
-        data={BEVERAGES_DATA}
+        data={beveragesData}
         renderItem={renderProductItem}
         keyExtractor={item => item.id}
         numColumns={2}

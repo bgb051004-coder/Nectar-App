@@ -20,6 +20,7 @@ import {
   Heart, 
   User 
 } from 'lucide-react-native';
+import { PRODUCTS } from '../data/data';
 
 const { width } = Dimensions.get('window');
 const BANNER_WIDTH = width - 40;
@@ -42,23 +43,23 @@ const BANNERS = [
   { id: 'b3', title: 'Dairy Products', subtitle: 'Get Up To 20% OFF', color: COLORS.bluePastel },
 ];
 
-const EXCLUSIVE_OFFERS = [
-  { id: 'e1', name: 'Organic Bananas', price: '$4.99', unit: '7pcs, Priceg', image: 'https://cdn-icons-png.flaticon.com/512/2907/2907444.png' },
-  { id: 'e2', name: 'Red Apple', price: '$1.99', unit: '1kg, Priceg', image: 'https://cdn-icons-png.flaticon.com/512/415/415733.png' },
-];
-
-const BEST_SELLING = [
-  { id: 'bs1', name: 'Bell Pepper Red', price: '$4.99', unit: '1kg, Priceg', image: 'https://cdn-icons-png.flaticon.com/512/3143/3143642.png' },
-  { id: 'bs2', name: 'Ginger', price: '$4.99', unit: '250g, Priceg', image: 'https://cdn-icons-png.flaticon.com/512/2907/2907421.png' },
-];
-
-const GROCERY_CATEGORIES = [
-  { id: 'g1', name: 'Pulses', image: 'https://cdn-icons-png.flaticon.com/512/1141/1141771.png', bgColor: COLORS.orangePastel },
-  { id: 'g2', name: 'Rice', image: 'https://cdn-icons-png.flaticon.com/512/4843/4843101.png', bgColor: COLORS.greenPastel },
-];
-
+const GROCERY_STYLE_MAP = {
+  'Pulses': { bgColor: '#F8A44C20', image: require('../../assets/dairy.png') },
+  'Rice': { bgColor: '#53B17520', image: require('../../assets/dairy.png') },
+  'Dairy': { bgColor: '#F7A59320', image: require('../../assets/dairy.png') },
+};
 export default function HomeScreen({ navigation }) {
   const [activeIndex, setActiveIndex] = React.useState(0);
+  const exclusiveOffers = PRODUCTS.filter(item => item.isExclusive);
+  const bestSelling = PRODUCTS.filter(item => item.isBestSelling);
+  const groceryCategories = Array.from(new Set(
+    PRODUCTS
+      .filter(item => item.category !== 'Fruits' && item.category !== 'Beverages')
+      .map(item => item.category)
+  )).map(catName => ({
+    name: catName,
+    ...(GROCERY_STYLE_MAP[catName] || { bgColor: '#F2F3F2', image: require('../../assets/fruits.png') })
+  }));
 
   const onViewableItemsChanged = React.useRef(({ viewableItems }) => {
     if (viewableItems.length > 0) setActiveIndex(viewableItems[0].index);
@@ -71,11 +72,11 @@ export default function HomeScreen({ navigation }) {
       activeOpacity={0.8}
       onPress={() => navigation.navigate('ProductDetail', { product: item })}
     >
-      <Image source={{ uri: item.image }} style={styles.productImage} />
+      <Image source={item.image} style={styles.productImage} />
       <Text style={styles.productName} numberOfLines={1}>{item.name}</Text>
       <Text style={styles.productUnit}>{item.unit}</Text>
       <View style={styles.cardFooter}>
-        <Text style={styles.productPrice}>{item.price}</Text>
+        <Text style={styles.productPrice}>${item.price.toFixed(2)}</Text>
         <TouchableOpacity style={styles.addButton} activeOpacity={0.7}>
           <Text style={styles.addButtonText}>+</Text>
         </TouchableOpacity>
@@ -109,12 +110,12 @@ export default function HomeScreen({ navigation }) {
             renderItem={({ item }) => (
               <View style={[styles.bannerSlide, { backgroundColor: item.color }]}>
                 {/* Ảnh minh họa giả lập Nectar */}
-                <Image source={{ uri: 'https://i.imgur.com/your-veggie-left.png' }} style={styles.bannerDecorLeft} />
+                <Image source={require('../../assets/banana.png')} style={styles.bannerDecorLeft} />
                 <View style={styles.bannerTextContent}>
                   <Text style={styles.bannerMainTitle}>{item.title}</Text>
                   <Text style={styles.bannerSubTitle}>{item.subtitle}</Text>
                 </View>
-                <Image source={{ uri: 'https://i.imgur.com/your-veggie-right.png' }} style={styles.bannerDecorRight} />
+                <Image source={require('../../assets/banana.png')} style={styles.bannerDecorRight} />
               </View>
             )}
             horizontal
@@ -134,7 +135,7 @@ export default function HomeScreen({ navigation }) {
         <SectionHeader title="Exclusive Offer" />
         <FlatList
           horizontal
-          data={EXCLUSIVE_OFFERS}
+          data={exclusiveOffers}
           renderItem={({ item }) => <ProductCard item={item} />}
           keyExtractor={item => item.id}
           showsHorizontalScrollIndicator={false}
@@ -144,7 +145,7 @@ export default function HomeScreen({ navigation }) {
         <SectionHeader title="Best Selling" />
         <FlatList
           horizontal
-          data={BEST_SELLING}
+          data={bestSelling}
           renderItem={({ item }) => <ProductCard item={item} />}
           keyExtractor={item => item.id}
           showsHorizontalScrollIndicator={false}
@@ -153,9 +154,9 @@ export default function HomeScreen({ navigation }) {
 
         <SectionHeader title="Groceries" />
         <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.listPadding}>
-          {GROCERY_CATEGORIES.map((cat) => (
-            <TouchableOpacity key={cat.id} style={[styles.catCard, { backgroundColor: cat.bgColor }]}>
-              <Image source={{ uri: cat.image }} style={styles.catImage} />
+          {groceryCategories.map((cat, index) => (
+            <TouchableOpacity key={index} style={[styles.catCard, { backgroundColor: cat.bgColor }]}>
+              <Image source={cat.image} style={styles.catImage} />
               <Text style={styles.catName}>{cat.name}</Text>
             </TouchableOpacity>
           ))}
@@ -163,7 +164,7 @@ export default function HomeScreen({ navigation }) {
 
         <FlatList
           horizontal
-          data={EXCLUSIVE_OFFERS}
+          data={PRODUCTS}
           renderItem={({ item }) => <ProductCard item={item} />}
           keyExtractor={item => "g_list_" + item.id}
           showsHorizontalScrollIndicator={false}
