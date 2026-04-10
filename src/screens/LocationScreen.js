@@ -17,7 +17,7 @@ export default function LocationScreen({ navigation }) {
   return (
     <SafeAreaView style={styles.container}>
       <Image
-        source={require('../../assets/mask_group.png')}
+        source={require('../../assets/images/mask_group.png')}
         style={styles.backgroundImage}
       />
       {/* Nút quay lại */}
@@ -31,7 +31,7 @@ export default function LocationScreen({ navigation }) {
       <ScrollView contentContainerStyle={styles.scrollContent}>
         {/* Hình minh họa */}
         <Image 
-          source={require('../../assets/illustration.png')} 
+          source={require('../../assets/images/illustration.png')} 
           style={styles.illustration}
           resizeMode="contain"
         />

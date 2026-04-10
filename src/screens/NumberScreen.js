@@ -33,7 +33,7 @@ export default function NumberScreen({ navigation }) {
   return (
     <SafeAreaView style={styles.container}>
       <Image
-        source={require('../../assets/mask_group.png')}
+        source={require('../../assets/images/mask_group.png')}
         style={styles.backgroundImage}
       />
       <KeyboardAvoidingView 

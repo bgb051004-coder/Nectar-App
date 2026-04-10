@@ -99,7 +99,7 @@ export default function CartScreen({ navigation }) {
       <View style={styles.footer}>
         <TouchableOpacity 
             style={styles.checkoutButton}
-            onPress={() => console.log("Chuyển sang thanh toán")}
+            onPress={() => navigation.navigate('Checkout', { totalAmount: getTotalPrice() })}
         >
           <Text style={styles.checkoutText}>Go to Checkout</Text>
           <View style={styles.priceBadge}>

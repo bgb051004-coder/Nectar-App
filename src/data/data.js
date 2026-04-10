@@ -7,7 +7,7 @@ export const PRODUCTS = [
     unit: '355ml, Price', 
     price: 1.99, 
     category: 'Beverages',
-    image: require('../../assets/banana.png') 
+    image: require('../../assets/images/banana.png') 
   },
   { 
     id: '2', 
@@ -15,7 +15,7 @@ export const PRODUCTS = [
     unit: '325ml, Price', 
     price: 1.50, 
     category: 'Beverages',
-    image: require('../../assets/banana.png') 
+    image: require('../../assets/images/banana.png') 
   },
   // Fruits
   { 
@@ -25,7 +25,7 @@ export const PRODUCTS = [
     price: 4.99, 
     category: 'Fruits',
     isExclusive: true,
-    image: require('../../assets/banana.png') 
+    image: require('../../assets/images/banana.png') 
   },
   { 
     id: '4', 
@@ -34,7 +34,7 @@ export const PRODUCTS = [
     price: 3.99, 
     category: 'Fruits',
     isExclusive: true,
-    image: require('../../assets/apple.png') 
+    image: require('../../assets/images/apple.png') 
   },
 
   // Dairy
@@ -45,7 +45,7 @@ export const PRODUCTS = [
     price: 1.99, 
     category: 'Dairy',
     isBestSelling: true,
-    image: require('../../assets/EggRed.png') 
+    image: require('../../assets/images/EggRed.png') 
   },
   {
     id: '6', 
@@ -53,6 +53,6 @@ export const PRODUCTS = [
     unit: '30gm, Price', 
     price: 2.99, 
     category: 'Dairy',
-    image: require('../../assets/EggPasta.png') 
+    image: require('../../assets/images/EggPasta.png') 
   }
 ];

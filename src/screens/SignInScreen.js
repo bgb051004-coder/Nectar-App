@@ -18,7 +18,7 @@ export default function LoginScreen({navigation}) {
       
       {/* Top Image */}
       <Image
-        source={require("../../assets/bglogin.png") }
+        source={require("../../assets/images/bglogin.png") }
         style={styles.image}
         resizeMode="cover"
       />

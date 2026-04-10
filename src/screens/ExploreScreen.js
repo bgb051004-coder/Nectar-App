@@ -35,9 +35,9 @@ const COLORS = {
 
 // 2. Định nghĩa màu sắc và icon cho từng loại danh mục (để giao diện đẹp như mẫu)
 const CATEGORY_STYLES = {
-  'Fruits': { bgColor: '#EEF8F2', borderColor: '#53B175', image: require('../../assets/fruits.png') },
-  'Beverages': { bgColor: '#EDF7FC', borderColor: '#B7DFF5', image: require('../../assets/beverages.png') },
-  'Dairy': { bgColor: '#FFF9E5', borderColor: '#FDE598', image: require('../../assets/dairy.png') },
+  'Fruits': { bgColor: '#EEF8F2', borderColor: '#53B175', image: require('../../assets/images/fruits.png') },
+  'Beverages': { bgColor: '#EDF7FC', borderColor: '#B7DFF5', image: require('../../assets/images/beverages.png') },
+  'Dairy': { bgColor: '#FFF9E5', borderColor: '#FDE598', image: require('../../assets/images/dairy.png') },
   // Thêm các category khác nếu data.js của bạn có thêm
 };
 
@@ -49,7 +49,7 @@ export default function ExploreScreen({ navigation }) {
     const style = CATEGORY_STYLES[catName] || { 
       bgColor: '#F2F3F2', 
       borderColor: '#E2E2E2', 
-      image: require('../../assets/fruits.png')
+      image: require('../../assets/images/fruits.png')
     };
     return {
       name: catName,

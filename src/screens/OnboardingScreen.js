@@ -14,7 +14,7 @@ const { width, height } = Dimensions.get("window");
 export default function OnboardingScreen({ navigation }) {
   return (
     <ImageBackground
-      source={require("../../assets/onbording.png")}
+      source={require("../../assets/images/onbording.png")}
       style={styles.container}
       resizeMode="cover"
     >
@@ -24,7 +24,7 @@ export default function OnboardingScreen({ navigation }) {
       {/* Content */}
       <View style={styles.content}>
         <Image
-          source={require("../../assets/minilogo.png")}
+          source={require("../../assets/images/minilogo.png")}
           style={styles.logo}
           resizeMode="contain"
         />

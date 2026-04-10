@@ -22,7 +22,7 @@ export default function LoginScreen({ navigation }) {
     <SafeAreaView style={styles.container}>
       {/* Background mờ ảo như file Mask Group.png */}
       <Image 
-        source={require('../../assets/mask_group.png')} 
+        source={require('../../assets/images/mask_group.png')} 
         style={styles.backgroundImage} 
       />
 
@@ -34,7 +34,7 @@ export default function LoginScreen({ navigation }) {
           {/* Logo củ cà rốt (từ Splash Screen) */}
           <View style={styles.logoContainer}>
             <Image
-              source={require('../../assets/carrot_orange.png')}
+              source={require('../../assets/images/carrot_orange.png')}
               style={styles.logo}
               resizeMode="contain"
             />

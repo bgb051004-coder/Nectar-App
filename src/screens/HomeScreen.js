@@ -44,9 +44,9 @@ const BANNERS = [
 ];
 
 const GROCERY_STYLE_MAP = {
-  'Pulses': { bgColor: '#F8A44C20', image: require('../../assets/dairy.png') },
-  'Rice': { bgColor: '#53B17520', image: require('../../assets/dairy.png') },
-  'Dairy': { bgColor: '#F7A59320', image: require('../../assets/dairy.png') },
+  'Pulses': { bgColor: '#F8A44C20', image: require('../../assets/images/dairy.png') },
+  'Rice': { bgColor: '#53B17520', image: require('../../assets/images/dairy.png') },
+  'Dairy': { bgColor: '#F7A59320', image: require('../../assets/images/dairy.png') },
 };
 export default function HomeScreen({ navigation }) {
   const [activeIndex, setActiveIndex] = React.useState(0);
@@ -58,7 +58,7 @@ export default function HomeScreen({ navigation }) {
       .map(item => item.category)
   )).map(catName => ({
     name: catName,
-    ...(GROCERY_STYLE_MAP[catName] || { bgColor: '#F2F3F2', image: require('../../assets/fruits.png') })
+    ...(GROCERY_STYLE_MAP[catName] || { bgColor: '#F2F3F2', image: require('../../assets/images/fruits.png') })
   }));
 
   const onViewableItemsChanged = React.useRef(({ viewableItems }) => {
@@ -90,7 +90,7 @@ export default function HomeScreen({ navigation }) {
         
         {/* Header Section */}
         <View style={styles.header}>
-          <Image source={require('../../assets/carrot_orange.png')} style={styles.logoMini} />
+          <Image source={require('../../assets/images/carrot_orange.png')} style={styles.logoMini} />
           <View style={styles.locationContainer}>
             <MapPin color="#4C4C4C" size={18} />
             <Text style={styles.locationText}>Dhaka, Banasree</Text>
@@ -98,10 +98,16 @@ export default function HomeScreen({ navigation }) {
         </View>
 
         {/* Search Bar */}
-        <View style={styles.searchContainer}>
+        <TouchableOpacity
+           style={styles.searchContainer}
+           activeOpacity={0.8}
+           onPress={() => navigation.navigate('Search')}
+        >
           <Search color={COLORS.black} size={20} />
-          <TextInput style={styles.searchInput} placeholder="Search Store" placeholderTextColor={COLORS.gray} />
-        </View>
+          <View style={styles.fakeInput}>
+            <Text style={styles.searchPlaceholder}>Search Store</Text>
+          </View>
+        </TouchableOpacity>
 
         {/* CẬP NHẬT: Banner có ảnh minh họa trái/phải */}
         <View style={styles.bannerWrapper}>
@@ -110,12 +116,12 @@ export default function HomeScreen({ navigation }) {
             renderItem={({ item }) => (
               <View style={[styles.bannerSlide, { backgroundColor: item.color }]}>
                 {/* Ảnh minh họa giả lập Nectar */}
-                <Image source={require('../../assets/banana.png')} style={styles.bannerDecorLeft} />
+                <Image source={require('../../assets/images/banana.png')} style={styles.bannerDecorLeft} />
                 <View style={styles.bannerTextContent}>
                   <Text style={styles.bannerMainTitle}>{item.title}</Text>
                   <Text style={styles.bannerSubTitle}>{item.subtitle}</Text>
                 </View>
-                <Image source={require('../../assets/banana.png')} style={styles.bannerDecorRight} />
+                <Image source={require('../../assets/images/banana.png')} style={styles.bannerDecorRight} />
               </View>
             )}
             horizontal
@@ -227,10 +233,18 @@ const styles = StyleSheet.create({
   locationContainer: { flexDirection: 'row', alignItems: 'center', marginTop: 5 },
   locationText: { fontSize: 18, fontWeight: '600', color: '#4C4C4C', marginLeft: 5 },
   searchContainer: { 
-    backgroundColor: COLORS.lightGray, flexDirection: 'row', alignItems: 'center', 
-    marginHorizontal: 20, borderRadius: 15, paddingHorizontal: 15, marginTop: 20 
+    backgroundColor: '#F2F3F2',
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginHorizontal: 20,
+    borderRadius: 15,
+    paddingHorizontal: 15,
+    height: 50,
+    marginBottom: 5, 
+    marginTop: 10,
   },
-  searchInput: { flex: 1, height: 50, marginLeft: 10, fontSize: 16, color: COLORS.black },
+  fakeInput: { flex: 1, marginLeft: 10 },
+  searchPlaceholder: { fontSize: 16, color: COLORS.gray },
 
   // Banner Styles Cập nhật
   bannerWrapper: { marginTop: 20, marginHorizontal: 20, height: 115, borderRadius: 15, overflow: 'hidden' },
