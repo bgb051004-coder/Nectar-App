@@ -1,7 +1,9 @@
-import React from "react";
+import React, { useContext } from "react"; // Chỉ cần useContext
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import { AuthContext } from '../context/AuthContext';
 
+// Import các màn hình
 import SplashScreen from "../screens/SplashScreen";
 import OnboardingScreen from "../screens/OnboardingScreen";
 import SignInScreen from "../screens/SignInScreen";
@@ -26,49 +28,61 @@ import AccountScreen from "../screens/AccountScreen";
 const Stack = createNativeStackNavigator();
 
 export default function AppNavigator() {
+  // Lấy giá trị trực tiếp từ Context
+  const { userToken, isLoading, isLoggingOut } = useContext(AuthContext);
+
+  if (isLoading) return null;
+
   return (
     <NavigationContainer>
-      <Stack.Navigator
-        initialRouteName="Splash"
+      <Stack.Navigator 
         screenOptions={{ headerShown: false }}
       >
-        <Stack.Screen name="Splash" component={SplashScreen} />
-        <Stack.Screen name="Onboarding" component={OnboardingScreen} />
-        <Stack.Screen name="SignIn" component={SignInScreen} />
-        <Stack.Screen name="Number" component={NumberScreen} />
-        <Stack.Screen name="Verification" component={VerificationScreen} />
-        <Stack.Screen name="Location" component={LocationScreen} />
-        <Stack.Screen name="LogIn" component={LogInScreen} />
-        <Stack.Screen name="SignUp" component={SignUpScreen} />
-        <Stack.Screen name="Home" component={HomeScreen} />
-        <Stack.Screen name="ProductDetail" component={ProductDetailScreen} />
-        <Stack.Screen name="Explore" component={ExploreScreen} />
-        <Stack.Screen name="Beverages" component={BeveragesScreen} />
-        <Stack.Screen name="Search" component={SearchScreen} />
-        <Stack.Screen name="Filter" component={FilterScreen} />
-        <Stack.Screen name="Cart" component={CartScreen} />
-        <Stack.Screen name="Favourite" component={FavouriteScreen} />
-        <Stack.Screen 
-          name="Checkout" 
-          component={CheckoutScreen} 
-          options={
-            // Tạo hiệu ứng trượt từ dưới lên
-            {
-              presentation: 'transparentModal',
-              animation: 'slide_from_bottom',
-            } 
-          }
-        />
-        <Stack.Screen name="OrderAccepted" component={OrderAcceptedScreen} />
-        <Stack.Screen 
-          name="Error" 
-          component={ErrorScreen} 
-          options={{
-            presentation: 'transparentModal',
-            animation: 'fade',
-          }}
-        />
-        <Stack.Screen name="Account" component={AccountScreen} />
+        {userToken == null ? (
+          <>
+            {isLoggingOut && <Stack.Screen name="LogIn" component={LogInScreen} />}
+
+            <Stack.Screen name="Splash" component={SplashScreen} />
+            <Stack.Screen name="Onboarding" component={OnboardingScreen} />
+
+            {!isLoggingOut && <Stack.Screen name="LogIn" component={LogInScreen} />}   
+                     
+            <Stack.Screen name="SignUp" component={SignUpScreen} />
+            <Stack.Screen name="SignIn" component={SignInScreen} />
+            <Stack.Screen name="Number" component={NumberScreen} />
+            <Stack.Screen name="Verification" component={VerificationScreen} />
+            <Stack.Screen name="Location" component={LocationScreen} />
+          </>
+        ) : (
+          <>
+            <Stack.Screen name="Home" component={HomeScreen} />
+            <Stack.Screen name="ProductDetail" component={ProductDetailScreen} />
+            <Stack.Screen name="Explore" component={ExploreScreen} />
+            <Stack.Screen name="Beverages" component={BeveragesScreen} />
+            <Stack.Screen name="Search" component={SearchScreen} />
+            <Stack.Screen name="Filter" component={FilterScreen} />
+            <Stack.Screen name="Cart" component={CartScreen} />
+            <Stack.Screen name="Favourite" component={FavouriteScreen} />
+            <Stack.Screen 
+              name="Checkout" 
+              component={CheckoutScreen} 
+              options={{
+                presentation: 'transparentModal',
+                animation: 'slide_from_bottom',
+              }}
+            />
+            <Stack.Screen name="OrderAccepted" component={OrderAcceptedScreen} />
+            <Stack.Screen 
+              name="Error" 
+              component={ErrorScreen} 
+              options={{
+                presentation: 'transparentModal',
+                animation: 'fade',
+              }}
+            />
+            <Stack.Screen name="Account" component={AccountScreen} />
+          </>
+        )}
       </Stack.Navigator>
     </NavigationContainer>
   );

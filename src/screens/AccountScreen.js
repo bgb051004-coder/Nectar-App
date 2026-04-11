@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext, useState, useEffect } from 'react'; // Thêm useContext
 import {
   StyleSheet,
   View,
@@ -18,8 +18,12 @@ import {
   CircleHelp, 
   Info, 
   LogOut,
-  ChevronRight 
+  ChevronRight, 
+  NavigationOff
 } from 'lucide-react-native';
+
+import { AuthContext } from '../context/AuthContext'; // Đảm bảo đúng đường dẫn
+import storageService from '../services/storageService';
 
 const COLORS = {
   green: '#53B175',
@@ -32,7 +36,25 @@ const COLORS = {
 };
 
 export default function AccountScreen({ navigation }) {
-  
+  // 1. Lấy hàm logout và có thể lấy thêm thông tin user từ Context
+  const { logout } = useContext(AuthContext);
+  const [userData, setUserData] = useState({ name: '', email: '' });
+
+  // 2. Load dữ liệu user khi vào màn hình
+  useEffect(() => {
+    const fetchUserData = async () => {
+      const data = await storageService.getLoginData();
+      if (data && data.user) {
+        setUserData(data.user);
+      }
+    };
+    fetchUserData();
+  }, []);
+
+  const handleLogout = async () => {
+    await logout(); // Gọi hàm logout từ Context để xóa dữ liệu và đổi trạng thái
+  };
+
   // Thành phần con cho mỗi dòng trong danh sách
   const MenuItem = ({ icon: Icon, label, onPress, showBorder = true, color = COLORS.black }) => (
     <TouchableOpacity 
@@ -54,17 +76,17 @@ export default function AccountScreen({ navigation }) {
         {/* Profile Header */}
         <View style={styles.profileHeader}>
           <Image 
-            source={require('../../assets/images/avatar.png')}
+            source={require('../../assets/images/avatar.png')} // Bạn có thể sửa logic avatar động ở đây
             style={styles.avatar} 
           />
           <View style={styles.profileInfo}>
             <View style={styles.nameRow}>
-              <Text style={styles.userName}>Afsar Hossen</Text>
+              <Text style={styles.userName}>{userData.username || userData.name || 'User'}</Text>
               <TouchableOpacity>
                 <IdCard color={COLORS.green} size={18} />
               </TouchableOpacity>
             </View>
-            <Text style={styles.userEmail}>Imshuvo97@gmail.com</Text>
+            <Text style={styles.userEmail}>{userData.email || 'No Email'}</Text>
           </View>
         </View>
 
@@ -84,7 +106,7 @@ export default function AccountScreen({ navigation }) {
         <View style={styles.footer}>
           <TouchableOpacity 
             style={styles.logoutButton}
-            onPress={() => navigation.replace('LogIn')}
+            onPress={handleLogout}
           >
             <LogOut color={COLORS.green} size={22} />
             <Text style={styles.logoutText}>Log Out</Text>
@@ -94,8 +116,9 @@ export default function AccountScreen({ navigation }) {
       </ScrollView>
     </SafeAreaView>
   );
-}
+} // Đóng ngoặc function AccountScreen
 
+// Styles giữ nguyên như của bạn
 const styles = StyleSheet.create({
   container: {
     flex: 1,

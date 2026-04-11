@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react'; // Thêm useContext
 import {
   StyleSheet,
   Text,
@@ -9,18 +9,48 @@ import {
   KeyboardAvoidingView,
   Platform,
   ScrollView,
+  Alert,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { Eye, EyeOff } from 'lucide-react-native'; // Thư viện icon bạn đang dùng
+import { Eye, EyeOff } from 'lucide-react-native';
+import { AuthContext } from '../context/AuthContext'; // Đảm bảo đúng đường dẫn
 
 export default function LoginScreen({ navigation }) {
-  const [email, setEmail] = useState('imshuvo97@gmail.com');
-  const [password, setPassword] = useState('12345678');
+  // 1. Khai báo các State cần thiết
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const [secureText, setSecureText] = useState(true);
+
+  // 2. Lấy hàm login từ AuthContext
+  const { login } = useContext(AuthContext);
+
+  const handleLogin = async () => {
+    if (!email || !password) {
+      Alert.alert("Lỗi", "Vui lòng nhập đầy đủ email và mật khẩu");
+      return;
+    }
+
+    try {
+      // Giả lập dữ liệu user và token (Sau này thay bằng gọi API)
+      const mockToken = "12345";
+      const user = { 
+        email: email,
+        username: email.split('@')[0] // Lấy phần trước @ làm tên tạm thời
+      };
+      
+      // Gọi hàm login từ Context (Hàm này sẽ lưu vào AsyncStorage và đổi userToken)
+      await login(user, mockToken); 
+      
+      console.log("Đăng nhập thành công");
+      // Bạn không cần navigation.navigate vì AppNavigator sẽ tự đổi sang Home
+    } catch (error) {
+      Alert.alert("Lỗi", "Đăng nhập thất bại");
+      console.error(error);
+    }
+  };
 
   return (
     <SafeAreaView style={styles.container}>
-      {/* Background mờ ảo như file Mask Group.png */}
       <Image 
         source={require('../../assets/images/mask_group.png')} 
         style={styles.backgroundImage} 
@@ -30,8 +60,10 @@ export default function LoginScreen({ navigation }) {
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         style={{ flex: 1 }}
       >
-        <ScrollView contentContainerStyle={styles.scrollContent}>
-          {/* Logo củ cà rốt (từ Splash Screen) */}
+        <ScrollView 
+          contentContainerStyle={styles.scrollContent}
+          showsVerticalScrollIndicator={false}
+        >
           <View style={styles.logoContainer}>
             <Image
               source={require('../../assets/images/carrot_orange.png')}
@@ -41,8 +73,8 @@ export default function LoginScreen({ navigation }) {
           </View>
 
           <View style={styles.headerContainer}>
-            <Text style={styles.title}>Loging</Text>
-            <Text style={styles.subtitle}>Enter your emails and password</Text>
+            <Text style={styles.title}>Logging</Text>
+            <Text style={styles.subtitle}>Enter your email and password</Text>
           </View>
 
           <View style={styles.form}>
@@ -55,6 +87,7 @@ export default function LoginScreen({ navigation }) {
                 onChangeText={setEmail}
                 keyboardType="email-address"
                 autoCapitalize="none"
+                placeholder="example@gmail.com"
               />
             </View>
 
@@ -67,6 +100,7 @@ export default function LoginScreen({ navigation }) {
                   value={password}
                   onChangeText={setPassword}
                   secureTextEntry={secureText}
+                  placeholder="••••••••"
                 />
                 <TouchableOpacity onPress={() => setSecureText(!secureText)}>
                   {secureText ? (
@@ -85,7 +119,7 @@ export default function LoginScreen({ navigation }) {
 
             <TouchableOpacity 
               style={styles.loginBtn}
-              onPress={() => navigation.navigate('Home')}
+              onPress={handleLogin}
             >
               <Text style={styles.loginBtnText}>Log In</Text>
             </TouchableOpacity>
@@ -101,7 +135,7 @@ export default function LoginScreen({ navigation }) {
       </KeyboardAvoidingView>
     </SafeAreaView>
   );
-}
+} // Đóng đúng ngoặc function LoginScreen
 
 const styles = StyleSheet.create({
   container: {

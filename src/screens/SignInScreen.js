@@ -4,7 +4,6 @@ import {
   Text,
   StyleSheet,
   Image,
-  TextInput,
   TouchableOpacity,
   Dimensions,
 } from "react-native";
@@ -30,14 +29,19 @@ export default function LoginScreen({navigation}) {
         </Text>
 
         {/* Phone Input */}
-        <View style={styles.inputContainer}>
-          <Text style={styles.flag}>🇻🇳</Text>
-          <TextInput
-            placeholder="+84"
-            style={styles.input}
-            onFocus={() => navigation.navigate("Number")}
-          />
-        </View>
+        <TouchableOpacity 
+          style={styles.inputContainer}
+          activeOpacity={0.8}
+          onPress={() => navigation.navigate('Number')}
+        >
+          <View style={styles.countryPicker}>
+            <Image 
+            source={{ uri: 'https://flagcdn.com/w40/vn.png' }} 
+            style={styles.flag} 
+            />
+            <Text style={styles.countryCode}>+84</Text> 
+          </View>
+        </TouchableOpacity>
 
         {/* Divider */}
         <View style={styles.divider} />
@@ -89,14 +93,26 @@ const styles = StyleSheet.create({
   },
 
   inputContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    marginBottom: 10,
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingVertical: 10,
+    marginTop: 10,
   },
-
+countryPicker: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginRight: 12,
+  },
   flag: {
-    fontSize: 20,
+    width: 30,
+    height: 20,
+    borderRadius: 4,
     marginRight: 10,
+  },
+  countryCode: {
+    fontSize: 18,
+    color: '#181725',
+    fontWeight: '500',
   },
 
   input: {

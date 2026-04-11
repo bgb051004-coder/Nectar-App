@@ -9,15 +9,53 @@ import {
   KeyboardAvoidingView,
   Platform,
   ScrollView,
+  Alert,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Eye, EyeOff, Check } from 'lucide-react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function SignupScreen({ navigation }) {
-  const [username, setUsername] = useState('Afsar Hossen Shuvo');
-  const [email, setEmail] = useState('imshuvo97@gmail.com');
-  const [password, setPassword] = useState('12345678');
+  const [username, setUsername] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const [secureText, setSecureText] = useState(true);
+  const handleSignup = async () => {
+    // 1. Kiểm tra validation cơ bản
+    if (!username || !email || !password) {
+      Alert.alert("Error", "Please fill in all fields");
+      return;
+    }
+
+    if (password.length < 10) {
+      Alert.alert("Error", "Password must be at least 10 characters");
+      return;
+    }
+
+    try {
+      // 2. Tạo đối tượng người dùng mới
+      const newUser = {
+        username: username,
+        email: email,
+        password: password,
+      };
+
+      console.log("Đang lưu dữ liệu người dùng...");
+      // 3. Lưu vào máy với key giả lập '@registered_user'
+      await AsyncStorage.setItem('@registered_user', JSON.stringify(newUser));
+      console.log("Lưu thành công, đang hiển thị thông báo chuyển hướng");
+
+      Alert.alert(
+        "Success", 
+        "Account created successfully! Please log in.",
+        [{ text: "OK", onPress: () => navigation.navigate('LogIn') }]
+      );
+
+    } catch (error) {
+      console.error("Signup Error:", error);
+      Alert.alert("Error", "Something went wrong during signup.");
+    }
+  };
 
   return (
     <SafeAreaView style={styles.container}>
@@ -108,7 +146,7 @@ export default function SignupScreen({ navigation }) {
 
             <TouchableOpacity 
               style={styles.signupBtn}
-              onPress={() => navigation.navigate('Location')}
+              onPress={handleSignup}
             >
               <Text style={styles.signupBtnText}>Sign Up</Text>
             </TouchableOpacity>

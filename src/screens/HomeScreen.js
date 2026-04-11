@@ -116,12 +116,10 @@ export default function HomeScreen({ navigation }) {
             renderItem={({ item }) => (
               <View style={[styles.bannerSlide, { backgroundColor: item.color }]}>
                 {/* Ảnh minh họa giả lập Nectar */}
-                <Image source={require('../../assets/images/banana.png')} style={styles.bannerDecorLeft} />
                 <View style={styles.bannerTextContent}>
                   <Text style={styles.bannerMainTitle}>{item.title}</Text>
                   <Text style={styles.bannerSubTitle}>{item.subtitle}</Text>
                 </View>
-                <Image source={require('../../assets/images/banana.png')} style={styles.bannerDecorRight} />
               </View>
             )}
             horizontal
