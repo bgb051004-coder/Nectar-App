@@ -10,6 +10,10 @@ export const AuthProvider = ({ children }) => {
   const [isLoggingOut, setIsLoggingOut] = useState(false);
   const [isAutoLogin, setIsAutoLogin] = useState(false);
   const [orders, setOrders] = useState([]);
+  const loadOrdersFromStorage = async () => {
+    const savedOrders = await storageService.getOrders();
+    setOrders(savedOrders || []); // Nếu null thì set mảng rỗng
+  };
 
   // Kiểm tra trạng thái đăng nhập khi mở app
   const checkLogin = async () => {
@@ -19,8 +23,7 @@ export const AuthProvider = ({ children }) => {
         setIsAutoLogin(true);
         setUserToken(data.token);
         setUserInfo(data.user); // Lưu thông tin user (bao gồm username) vào state
-        const savedOrders = await storageService.getOrders(); 
-        if (savedOrders) setOrders(savedOrders);
+        await loadOrdersFromStorage(); // Tải đơn hàng từ storage khi auto-login thành công
       }
     } catch (error) {
       console.log("Lỗi checkLogin:", error);
@@ -35,10 +38,17 @@ export const AuthProvider = ({ children }) => {
 
   // Hàm đăng nhập
   const login = async (userData, token) => {
-    await storageService.saveLoginData(userData, token);
-    setIsLoggingOut(false);
-    setIsAutoLogin(false);
-    setUserInfo(userData); // Cập nhật thông tin user ngay khi login
+    try {
+      await storageService.saveLoginData(userData, token);
+      setIsLoggingOut(false);
+      setIsAutoLogin(false);
+      setUserInfo(userData);
+      
+      // QUAN TRỌNG: Load lại đơn hàng ngay khi đăng nhập thành công
+      await loadOrdersFromStorage(); 
+    } catch (error) {
+      console.error("Lỗi khi login:", error);
+    }
   };
 
   const completeLogin = (token) => {
@@ -47,11 +57,18 @@ export const AuthProvider = ({ children }) => {
 
   // Hàm đăng xuất
   const logout = async () => {
-    await storageService.clearLoginData();
-    setIsLoggingOut(true);
-    setUserInfo(null); // Cập nhật thông tin user ngay khi login
-    setUserToken(null);
-    setOrders([]);
+    try {
+      await storageService.clearLoginData();
+      // Nếu bạn muốn xóa lịch sử đơn hàng khi người dùng Logout (để người sau không thấy):
+      await storageService.clearOrders(); 
+      
+      setIsLoggingOut(true);
+      setUserInfo(null);
+      setUserToken(null);
+      setOrders([]); // Reset state về mảng rỗng
+    } catch (error) {
+      console.error("Lỗi khi logout:", error);
+    }
   };
 
   const addOrder = async (newOrder) => {

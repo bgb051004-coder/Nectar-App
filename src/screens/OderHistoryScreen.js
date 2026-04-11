@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import {
   StyleSheet,
   Text,
@@ -9,11 +9,10 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { ChevronRight as ArrowIcon, Package } from 'lucide-react-native';
-import { ORDERS } from '../data/data';
 import { AuthContext } from '../context/AuthContext';
 
 export default function OrderHistoryScreen() {
-  const { orders } = React.useContext(AuthContext);
+  const { orders } = useContext(AuthContext);
   const renderOrderItem = ({ item }) => (
     <TouchableOpacity style={styles.orderCard} activeOpacity={0.7}>
       <View style={styles.orderHeader}>
