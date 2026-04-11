@@ -56,3 +56,29 @@ export const PRODUCTS = [
     image: require('../../assets/images/EggPasta.png') 
   }
 ];
+export const ORDERS = [
+  {
+    id: '#OD12345',
+    date: '10/04/2026',
+    status: 'Delivered',
+    total: 35.50,
+    items: 3,
+    color: '#53B175' // Xanh cho đã giao
+  },
+  {
+    id: '#OD12346',
+    date: '08/04/2026',
+    status: 'Processing',
+    total: 12.00,
+    items: 1,
+    color: '#F8A44C' // Cam cho đang xử lý
+  },
+  {
+    id: '#OD12347',
+    date: '01/04/2026',
+    status: 'Cancelled',
+    total: 50.25,
+    items: 5,
+    color: '#F7A593' // Đỏ nhạt cho đã hủy
+  },
+];

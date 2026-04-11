@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useEffect, useContext } from 'react';
 import {
   StyleSheet,
   Text,
@@ -12,6 +12,7 @@ import {
   Alert,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { AuthContext } from '../context/AuthContext';
 import {CartContext} from '../context/CartContext';
 import { 
   Search, 
@@ -93,6 +94,19 @@ export default function HomeScreen({ navigation }) {
       </View>
     </TouchableOpacity>
   );
+
+  const { userInfo, isLoggingOut, isAutoLogin } = useContext(AuthContext);
+
+  useEffect(() => {
+    // Chỉ hiện thông báo khi có thông tin user
+    if (userInfo?.username && !isLoggingOut && isAutoLogin) {
+      Alert.alert(
+        "Chào mừng trở lại!",
+        `Chào ${userInfo.username}, hệ thống đã tự động đăng nhập.`,
+        [{ text: "Bắt đầu mua sắm" }]
+      );
+    }
+  }, [userInfo, isLoggingOut, isAutoLogin]);
 
   return (
     <SafeAreaView style={styles.container}>

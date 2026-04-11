@@ -6,6 +6,7 @@ import {
   Image,
   TouchableOpacity,
   ScrollView,
+  Alert,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { 
@@ -52,7 +53,22 @@ export default function AccountScreen({ navigation }) {
   }, []);
 
   const handleLogout = async () => {
-    await logout(); // Gọi hàm logout từ Context để xóa dữ liệu và đổi trạng thái
+    Alert.alert(
+      "Xác nhận",
+      "Bạn có chắc chắn muốn đăng xuất không?",
+      [
+        { text: "Hủy", style: "cancel" },
+        { 
+          text: "Đăng xuất", 
+          style: "destructive",
+          onPress: async () => {
+            await logout();
+            // Thông báo sau khi đã xóa data thành công
+            Alert.alert("Thông báo", " bạn đã đăng xuất thành công!");
+          }
+        }
+      ]
+    );  
   };
 
   // Thành phần con cho mỗi dòng trong danh sách
@@ -92,7 +108,7 @@ export default function AccountScreen({ navigation }) {
 
         {/* Menu List */}
         <View style={styles.menuSection}>
-          <MenuItem icon={ShoppingBag} label="Orders" onPress={() => {}} />
+          <MenuItem icon={ShoppingBag} label="Orders" onPress={() => { navigation.navigate('OrderHistory'); }} />
           <MenuItem icon={IdCard} label="My Details" onPress={() => {}} />
           <MenuItem icon={MapPin} label="Delivery Address" onPress={() => {}} />
           <MenuItem icon={CreditCard} label="Payment Methods" onPress={() => {}} />

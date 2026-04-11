@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import {
   StyleSheet,
   View,
@@ -6,8 +6,12 @@ import {
   TouchableOpacity,
   ScrollView,
   Pressable,
+  Alert,
 } from 'react-native';
 import { X, ChevronRight } from 'lucide-react-native';
+import { AuthContext } from '../context/AuthContext';
+import { OrderContext } from '../context/OrderContext';
+import { CartContext } from '../context/CartContext';
 
 const COLORS = {
   green: '#53B175',
@@ -19,6 +23,38 @@ const COLORS = {
 
 export default function CheckOutScreen({ navigation, route }) {
   const { totalAmount = "0.00" } = route.params || {};
+
+  const { addOrder } = useContext(AuthContext);
+  const { cartItems, clearCart } = useContext(CartContext); 
+
+  const handlePlaceOrder = () => {
+    if (cartItems.length === 0) {
+      Alert.alert("Giỏ hàng trống", "Vui lòng thêm sản phẩm trước khi thanh toán.");
+      return;
+    }
+
+    const newOrder = {
+      id: `#OD${Math.floor(Math.random() * 100000)}`, // Tạo mã đơn ngẫu nhiên
+      date: new Date().toLocaleDateString('vi-VN'),
+      status: 'Processing',
+      total: parseFloat(totalAmount),
+      items: cartItems.length,
+      color: '#F8A44C', // Màu cam cho trạng thái đang xử lý
+    };
+
+    // 1. Lưu vào lịch sử đơn hàng
+    addOrder(newOrder);
+
+    // 2. Xóa giỏ hàng
+    clearCart();
+
+    // 3. Thông báo và chuyển hướng
+    Alert.alert(
+      "Thành công", 
+      "Đơn hàng của bạn đã được ghi lại!",
+      [{ text: "Xem lịch sử", onPress: () => navigation.navigate('OrderHistory') }]
+    );
+  };
 
   const CheckoutItem = ({ label, value }) => (
     <View style={styles.checkoutItem}>
@@ -60,15 +96,8 @@ export default function CheckOutScreen({ navigation, route }) {
 
         <TouchableOpacity 
           style={styles.placeOrderButton}
-          onPress={() => {
-            const isSuccess = false;
-            if (isSuccess) {
-              navigation.navigate('OrderAccepted');
-            } else {
-              navigation.replace('Error');
-            }
-          }}
-        >
+          onPress={handlePlaceOrder}
+        >  
           <Text style={styles.placeOrderText}>Place Order</Text>
         </TouchableOpacity>
       </View>

@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react'; // Thêm useContext
+import React, { useState, useContext, useEffect } from 'react'; // Thêm useContext
 import {
   StyleSheet,
   Text,
@@ -22,7 +22,7 @@ export default function LoginScreen({ navigation }) {
   const [secureText, setSecureText] = useState(true);
 
   // 2. Lấy hàm login từ AuthContext
-  const { login } = useContext(AuthContext);
+  const { login, completeLogin } = useContext(AuthContext);
 
   const handleLogin = async () => {
     if (!email || !password) {
@@ -40,7 +40,20 @@ export default function LoginScreen({ navigation }) {
       
       // Gọi hàm login từ Context (Hàm này sẽ lưu vào AsyncStorage và đổi userToken)
       await login(user, mockToken); 
-      
+      Alert.alert(
+        "Thành công",
+        "Bạn đã đăng nhập thành công!",
+        [
+          { 
+            text: "Bắt đầu mua sắm", 
+            onPress: () => {
+              completeLogin(mockToken); // Cập nhật userToken ngay sau khi login thành công
+              console.log("User clicked OK", mockToken); // Kiểm tra token đã được cập nhật chưa
+            } 
+          }
+        ],
+        { cancelable: false }
+      );
       console.log("Đăng nhập thành công");
       // Bạn không cần navigation.navigate vì AppNavigator sẽ tự đổi sang Home
     } catch (error) {
@@ -48,6 +61,14 @@ export default function LoginScreen({ navigation }) {
       console.error(error);
     }
   };
+
+const { isLoggingOut } = useContext(AuthContext);
+
+useEffect(() => {
+  if (isLoggingOut) {
+    Alert.alert("Thông báo", "Bạn đã đăng xuất khỏi hệ thống.");
+  }
+}, [isLoggingOut]);
 
   return (
     <SafeAreaView style={styles.container}>

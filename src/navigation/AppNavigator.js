@@ -24,6 +24,7 @@ import CheckoutScreen from "../screens/CheckOutScreen";
 import OrderAcceptedScreen from "../screens/OderAcceptedScreen";
 import ErrorScreen from "../screens/ErrorScreen";
 import AccountScreen from "../screens/AccountScreen";
+import OrderHistoryScreen from "../screens/OderHistoryScreen";
 
 const Stack = createNativeStackNavigator();
 
@@ -81,6 +82,7 @@ export default function AppNavigator() {
               }}
             />
             <Stack.Screen name="Account" component={AccountScreen} />
+            <Stack.Screen name="OrderHistory" component={OrderHistoryScreen} />
           </>
         )}
       </Stack.Navigator>

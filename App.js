@@ -4,12 +4,15 @@ import AppNavigator from './src/navigation/AppNavigator';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { AuthProvider } from './src/context/AuthContext';
 import { CartProvider } from './src/context/CartContext';
+import { OrderProvider } from './src/context/OrderContext';
 
 export default function App() {
   return (
     <AuthProvider>
       <CartProvider>
-        <AppNavigator/>
+        <OrderProvider>
+          <AppNavigator/>
+        </OrderProvider>
       </CartProvider>
     </AuthProvider>
   );

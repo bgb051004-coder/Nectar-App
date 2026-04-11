@@ -4,6 +4,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 const STORAGE_KEYS = {
   USER_DATA: '@user_data',
   AUTH_TOKEN: '@auth_token',
+  ORDERS_KEY: '@orders_data',
 };
 
 const storageService = {
@@ -46,6 +47,30 @@ const storageService = {
       console.error('Error clearing login data:', error);
     }
   },
+
+  saveOrders: async (orders) => {
+    try {
+      await AsyncStorage.setItem(STORAGE_KEYS.ORDERS_KEY, JSON.stringify(orders));
+    } catch (e) {
+      console.error("Lỗi lưu đơn hàng:", e);
+    }
+  },
+
+  // Lấy danh sách đơn hàng
+  getOrders: async () => {
+    try {
+      const jsonValue = await AsyncStorage.getItem(STORAGE_KEYS.ORDERS_KEY);
+      return jsonValue != null ? JSON.parse(jsonValue) : [];
+    } catch (e) {
+      console.error("Lỗi lấy đơn hàng:", e);
+      return [];
+    }
+  },
+  
+  // Đừng quên xóa đơn hàng khi Logout nếu muốn
+  clearOrders: async () => {
+    await AsyncStorage.removeItem(STORAGE_KEYS.ORDERS_KEY);
+  }
 };
 
 export default storageService;
