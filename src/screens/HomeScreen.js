@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import {
   StyleSheet,
   Text,
@@ -9,8 +9,10 @@ import {
   TouchableOpacity,
   FlatList,
   Dimensions,
+  Alert,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import {CartContext} from '../context/CartContext';
 import { 
   Search, 
   MapPin, 
@@ -50,6 +52,7 @@ const GROCERY_STYLE_MAP = {
 };
 export default function HomeScreen({ navigation }) {
   const [activeIndex, setActiveIndex] = React.useState(0);
+  const { addToCart } = useContext(CartContext);
   const exclusiveOffers = PRODUCTS.filter(item => item.isExclusive);
   const bestSelling = PRODUCTS.filter(item => item.isBestSelling);
   const groceryCategories = Array.from(new Set(
@@ -77,7 +80,14 @@ export default function HomeScreen({ navigation }) {
       <Text style={styles.productUnit}>{item.unit}</Text>
       <View style={styles.cardFooter}>
         <Text style={styles.productPrice}>${item.price.toFixed(2)}</Text>
-        <TouchableOpacity style={styles.addButton} activeOpacity={0.7}>
+        <TouchableOpacity 
+        style={styles.addButton} 
+        activeOpacity={0.7}
+        onPress ={() => {
+          addToCart(item);
+          Alert.alert('Added to Cart', `${item.name} has been added to your cart.`);
+        }}
+        >
           <Text style={styles.addButtonText}>+</Text>
         </TouchableOpacity>
       </View>

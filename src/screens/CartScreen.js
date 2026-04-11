@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useContext } from 'react'; // Bỏ useState, useEffect không dùng
 import {
   StyleSheet,
   Text,
@@ -9,7 +9,9 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { X, Minus, Plus } from 'lucide-react-native';
-import { PRODUCTS } from '../data/data';
+
+// QUAN TRỌNG: Import CartContext từ file của bạn
+import { CartContext } from '../context/CartContext'; 
 
 const COLORS = {
   green: '#53B175',
@@ -19,30 +21,13 @@ const COLORS = {
   white: '#FFFFFF',
 };
 
-const INITIAL_CART = [
-  {... PRODUCTS.find(p => p.id === '3'), quantity: 2}, // Organic Bananas
-  {... PRODUCTS.find(p => p.id === '5'), quantity: 1}, // Egg Red   
-  {... PRODUCTS.find(p => p.id === '2'), quantity: 3}, // Sprite Can  
-].filter(p => p.id); // Lọc bỏ undefined nếu có id không tìm thấy
-
 export default function CartScreen({ navigation }) {
-  const [cartItems, setCartItems] = useState(INITIAL_CART);
+  // Lấy dữ liệu và các hàm điều khiển từ Context
+  const { cartItems, updateQuantity, removeItem } = useContext(CartContext);
 
-  // Hàm tính tổng tiền
+  // Hàm tính tổng tiền dựa trên cartItems từ Context
   const getTotalPrice = () => {
     return cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0).toFixed(2);
-  };
-
-  // Hàm thay đổi số lượng
-  const updateQuantity = (id, delta) => {
-    setCartItems(prev => prev.map(item => 
-      item.id === id ? { ...item, quantity: Math.max(1, item.quantity + delta) } : item
-    ));
-  };
-
-  // Hàm xóa sản phẩm
-  const removeItem = (id) => {
-    setCartItems(prev => prev.filter(item => item.id !== id));
   };
 
   const renderCartItem = ({ item }) => (
@@ -65,9 +50,12 @@ export default function CartScreen({ navigation }) {
               style={styles.qtyButton} 
               onPress={() => updateQuantity(item.id, -1)}
             >
+              {/* Nếu quantity = 1 thì đổi màu icon Minus để báo hiệu không giảm được nữa */}
               <Minus color={item.quantity > 1 ? COLORS.green : COLORS.gray} size={18} />
             </TouchableOpacity>
+            
             <Text style={styles.qtyText}>{item.quantity}</Text>
+            
             <TouchableOpacity 
               style={styles.qtyButton} 
               onPress={() => updateQuantity(item.id, 1)}
@@ -90,23 +78,30 @@ export default function CartScreen({ navigation }) {
       <FlatList
         data={cartItems}
         renderItem={renderCartItem}
-        keyExtractor={item => item.id}
+        keyExtractor={item => item.id.toString()} // Đảm bảo key là string
         contentContainerStyle={styles.listContent}
         ItemSeparatorComponent={() => <View style={styles.separator} />}
-        ListEmptyComponent={<Text style={styles.emptyText}>Your cart is empty</Text>}
+        ListEmptyComponent={
+          <View style={styles.emptyContainer}>
+            <Text style={styles.emptyText}>Your cart is empty</Text>
+          </View>
+        }
       />
 
-      <View style={styles.footer}>
-        <TouchableOpacity 
-            style={styles.checkoutButton}
-            onPress={() => navigation.navigate('Checkout', { totalAmount: getTotalPrice() })}
-        >
-          <Text style={styles.checkoutText}>Go to Checkout</Text>
-          <View style={styles.priceBadge}>
-            <Text style={styles.priceBadgeText}>${getTotalPrice()}</Text>
-          </View>
-        </TouchableOpacity>
-      </View>
+      {/* Chỉ hiện Footer/Nút Checkout khi có hàng trong giỏ */}
+      {cartItems.length > 0 && (
+        <View style={styles.footer}>
+          <TouchableOpacity 
+              style={styles.checkoutButton}
+              onPress={() => navigation.navigate('Checkout', { totalAmount: getTotalPrice() })}
+          >
+            <Text style={styles.checkoutText}>Go to Checkout</Text>
+            <View style={styles.priceBadge}>
+              <Text style={styles.priceBadgeText}>${getTotalPrice()}</Text>
+            </View>
+          </TouchableOpacity>
+        </View>
+      )}
     </SafeAreaView>
   );
 }
@@ -119,6 +114,8 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: COLORS.border,
   },
+  emptyContainer: { flex: 1, alignItems: 'center', marginTop: 100 },
+  emptyText: { color: COLORS.gray, fontSize: 16 },
   headerTitle: { fontSize: 20, fontWeight: 'bold', color: COLORS.black },
   listContent: { paddingHorizontal: 25, paddingBottom: 100 },
   cartItem: {
